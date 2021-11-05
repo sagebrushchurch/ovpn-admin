@@ -8,7 +8,7 @@ services:
     image: openvpn:local
     command: /etc/openvpn/setup/configure.sh
     environment:
-      OVPN_SERVER_NET: "192.168.100.0"
+      OVPN_SERVER_NET: "10.8.0.0"
       OVPN_SERVER_MASK: "255.255.255.0"
     cap_add:
       - NET_ADMIN
@@ -22,11 +22,11 @@ services:
     build:
       context: .
     image: ovpn-admin:local
-    command: /app/ovpn-admin
+    command: /app/ovpn-admin --ccd --ccd.path="/mnt/ccd"
     environment:
       OVPN_DEBUG: "True"
       OVPN_VERBOSE: "True"
-      OVPN_NETWORK: "192.168.100.0/24"
+      OVPN_NETWORK: "10.8.0.0/24"
       EASYRSA_PATH: "/mnt/easyrsa"
       OVPN_SERVER: "127.0.0.1:7777:tcp"
       OVPN_INDEX_PATH: "/mnt/easyrsa/pki/index.txt"
@@ -34,3 +34,12 @@ services:
     volumes:
       - ./easyrsa_master:/mnt/easyrsa
       - ./ccd_master:/mnt/ccd
+  nginx:
+    build:
+        dockerfile: dockerfile
+        context: ./nginx
+    environment: 
+        - TZ=America/Denver
+    ports:
+      - 80:80
+      - 443:443
