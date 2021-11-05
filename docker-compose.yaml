@@ -8,8 +8,8 @@ services:
     image: openvpn:local
     command: /etc/openvpn/setup/configure.sh
     environment:
-      OVPN_SERVER_NET: "10.8.0.0"
-      OVPN_SERVER_MASK: "255.255.255.0"
+      OVPN_SERVER_NET: "10.7.0.0"
+      OVPN_SERVER_MASK: "255.255.248.0"
     cap_add:
       - NET_ADMIN
     ports:
@@ -26,7 +26,7 @@ services:
     environment:
       OVPN_DEBUG: "True"
       OVPN_VERBOSE: "True"
-      OVPN_NETWORK: "10.8.0.0/24"
+      OVPN_NETWORK: "10.7.0.0/21"
       EASYRSA_PATH: "/mnt/easyrsa"
       OVPN_SERVER: "127.0.0.1:7777:tcp"
       OVPN_INDEX_PATH: "/mnt/easyrsa/pki/index.txt"
