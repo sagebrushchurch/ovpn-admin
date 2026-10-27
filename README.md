@@ -9,7 +9,7 @@ Simple web UI to manage OpenVPN users, their certificates & routes in Linux. Whi
 This fork tracks [palark/ovpn-admin](https://github.com/palark/ovpn-admin) with these local changes:
 
 * `docker-compose.yaml`: UDP on port 7777, `10.7.0.0/21` network, certificate subject (`EASYRSA_REQ_*`) values, `EASYRSA_CERT_EXPIRE` (3650 days), password auth disabled, and an `nginx` service.
-* `nginx/`: basic-auth reverse proxy (`.htpasswd`) in front of the UI (`openvpn:8080`, shared network namespace).
+* `nginx/`: plain reverse proxy in front of the UI (`openvpn:8080`, shared network namespace). It does no authentication; Nginx Proxy Manager in front of it handles auth.
 * `setup/openvpn.conf` and `setup/configure.sh`: UDP, `data-ciphers` allowing CBC for legacy clients such as MikroTik, performance tuning, `client-to-client`, and site routes.
 * `templates/ccd.tpl`: `255.255.248.0` netmask for static client addresses.
 

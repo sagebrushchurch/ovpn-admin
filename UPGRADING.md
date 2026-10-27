@@ -44,5 +44,5 @@ History and lessons from moving this fork from the 2021 code to current `palark/
 * Upstream's `docker-compose.yaml` turns on password auth (`OVPN_AUTH`, `OVPN_PASSWD_AUTH`); this fork sets both to `false` to match how it is actually used.
 * The app logs `Certificate ... issued` even when easyrsa fails (`main.go`, non-Kubernetes branch of user creation). When users "don't get created", run the `build-client-full` command by hand to see the real error.
 * `client-to-client` and site-to-site routes pass through the cloud VM. OpenVPN encrypts on one thread, so throughput depends on single-core speed; shared-core `e2` VMs are slow. About 200 Mbit/s was measured on an `e2-medium`.
-* `nginx/.htpasswd` is committed. Treat the hashes in git history as exposed and rotate the password.
-* The UI has no login of its own, and upstream says it is for private networks only. Keep it behind nginx basic auth and off the public internet.
+* The old `nginx/.htpasswd` basic-auth hash is still in git history; treat it as exposed and do not reuse that password.
+* The UI has no login of its own, and upstream says it is for private networks only. Authentication is done by Nginx Proxy Manager in front of the `nginx` container, so make sure ports 80/443 on this stack are reachable only from the proxy and not from the internet.
