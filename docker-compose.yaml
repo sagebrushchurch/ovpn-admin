@@ -41,7 +41,7 @@ services:
       EASYRSA_REQ_ORG: "Sagebrush Church"
       EASYRSA_REQ_EMAIL: "techsupport@sagebrush.church"
       EASYRSA_REQ_OU: "Sagebrush IT"
-      CLIENT_CERT_EXPIRATION_DAYS: "3650"
+      EASYRSA_CERT_EXPIRE: "3650"
     network_mode: service:openvpn
     volumes:
       - ./easyrsa_master:/mnt/easyrsa
