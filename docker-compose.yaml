@@ -23,7 +23,7 @@ services:
       context: .
       dockerfile: Dockerfile.ovpn-admin
     image: ovpn-admin:local
-    command: /app/ovpn-admin
+    command: /app/ovpn-admin --ccd --ccd.path="/mnt/ccd"
     environment:
       OVPN_DEBUG: "true"
       OVPN_VERBOSE: "true"
