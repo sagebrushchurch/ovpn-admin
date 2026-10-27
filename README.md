@@ -4,6 +4,17 @@ Simple web UI to manage OpenVPN users, their certificates & routes in Linux. Whi
 
 ***DISCLAIMER!** This project was created for experienced users (system administrators) and private (e.g., protected by network policies) environments only. Thus, it is not implemented with security in mind (e.g., it doesn't strictly check all parameters passed by users, etc.). It also relies heavily on files and fails if required files aren't available.*
 
+## Sagebrush fork notes
+
+This fork tracks [palark/ovpn-admin](https://github.com/palark/ovpn-admin) with these local changes:
+
+* `docker-compose.yaml`: UDP on port 7777, `10.7.0.0/21` network, certificate subject (`EASYRSA_REQ_*`) values, password auth disabled, and an `nginx` service.
+* `nginx/`: basic-auth reverse proxy (`.htpasswd`) in front of the UI (`openvpn:8080`, shared network namespace).
+* `setup/openvpn.conf` and `setup/configure.sh`: UDP, performance tuning, `client-to-client`, and site routes.
+* `templates/ccd.tpl`: `255.255.248.0` netmask for static client addresses.
+
+Start it with `docker compose up -d --build`. The data lives in `easyrsa_master/` and `ccd_master/`; back both up before upgrading.
+
 ## Features
 
 * Adding, deleting OpenVPN users (generating certificates for them);
