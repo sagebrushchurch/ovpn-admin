@@ -10,36 +10,48 @@ services:
     environment:
       OVPN_SERVER_NET: "10.7.0.0"
       OVPN_SERVER_MASK: "255.255.248.0"
+      OVPN_PASSWD_AUTH: "false"
     cap_add:
       - NET_ADMIN
     ports:
-      - 7777:1194 # for openvpn
-      - 8080:8080 # for ovpn-admin because of network_mode
+      - 7777:1194/udp # for openvpn
     volumes:
       - ./easyrsa_master:/etc/openvpn/easyrsa
       - ./ccd_master:/etc/openvpn/ccd
   ovpn-admin:
     build:
       context: .
+      dockerfile: Dockerfile.ovpn-admin
     image: ovpn-admin:local
     command: /app/ovpn-admin --ccd --ccd.path="/mnt/ccd"
     environment:
-      OVPN_DEBUG: "True"
-      OVPN_VERBOSE: "True"
+      OVPN_DEBUG: "true"
+      OVPN_VERBOSE: "true"
       OVPN_NETWORK: "10.7.0.0/21"
+      OVPN_CCD: "true"
+      OVPN_CCD_PATH: "/mnt/ccd"
       EASYRSA_PATH: "/mnt/easyrsa"
-      OVPN_SERVER: "127.0.0.1:7777:tcp"
+      OVPN_SERVER: "34.174.121.61:7777:udp"
       OVPN_INDEX_PATH: "/mnt/easyrsa/pki/index.txt"
+      OVPN_AUTH: "false"
+      OVPN_AUTH_DB_PATH: "/mnt/easyrsa/pki/users.db"
+      LOG_LEVEL: "debug"
+      EASYRSA_REQ_PROVINCE: "New Mexico"
+      EASYRSA_REQ_CITY: "Albuquerque"
+      EASYRSA_REQ_ORG: "Sagebrush Church"
+      EASYRSA_REQ_EMAIL: "techsupport@sagebrush.church"
+      EASYRSA_REQ_OU: "Sagebrush IT"
+      EASYRSA_CERT_EXPIRE: "3650"
     network_mode: service:openvpn
     volumes:
       - ./easyrsa_master:/mnt/easyrsa
       - ./ccd_master:/mnt/ccd
   nginx:
     build:
-        dockerfile: dockerfile
-        context: ./nginx
-    environment: 
-        - TZ=America/Denver
+      dockerfile: dockerfile
+      context: ./nginx
+    environment:
+      - TZ=America/Denver
     ports:
       - 80:80
       - 443:443

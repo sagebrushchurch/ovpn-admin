@@ -21,10 +21,10 @@ else
     done
   else
     echo "Generating new certs"
-    easyrsa init-pki
+    easyrsa --batch init-pki
     cp -R /usr/share/easy-rsa/* $EASY_RSA_LOC/pki
     echo "ca" | easyrsa build-ca nopass
-    easyrsa build-server-full server nopass
+    easyrsa --batch build-server-full server nopass
     easyrsa gen-dh
     openvpn --genkey --secret ./pki/ta.key
   fi
@@ -48,7 +48,7 @@ if [ ${OVPN_PASSWD_AUTH} = "true" ]; then
   echo "auth-user-pass-verify /etc/openvpn/scripts/auth.sh via-file" | tee -a /etc/openvpn/openvpn.conf
   echo "script-security 2" | tee -a /etc/openvpn/openvpn.conf
   echo "verify-client-cert require" | tee -a /etc/openvpn/openvpn.conf
-  openvpn-user db-init --db.path=$EASY_RSA_LOC/pki/users.db
+  openvpn-user db-init --db.path=$EASY_RSA_LOC/pki/users.db && openvpn-user db-migrate --db.path=$EASY_RSA_LOC/pki/users.db
 fi
 
 [ -d $EASY_RSA_LOC/pki ] && chmod 755 $EASY_RSA_LOC/pki
@@ -56,4 +56,4 @@ fi
 
 mkdir -p /etc/openvpn/ccd
 
-openvpn --config /etc/openvpn/openvpn.conf --client-config-dir /etc/openvpn/ccd --port 1194 --proto tcp --management 127.0.0.1 8989 --dev tun0 --server ${OVPN_SRV_NET} ${OVPN_SRV_MASK}
+openvpn --config /etc/openvpn/openvpn.conf --client-config-dir /etc/openvpn/ccd --port 1194 --proto udp --management 127.0.0.1 8989 --dev tun0 --server ${OVPN_SRV_NET} ${OVPN_SRV_MASK}
